@@ -2,7 +2,7 @@
     <div class="preview">
         <div class="preview-cto">
             <div class="cto-item"
-                 :class="checkedKey == item.key ? 'active' : ''"
+                 :class="checkedKey === item.key ? 'active' : ''"
                  v-for="item in previewList" :key="item.key" @click="handleClickPreview(item.key)">
                 <div class="img-box">
                     <img :src="item.previewImg" alt="">

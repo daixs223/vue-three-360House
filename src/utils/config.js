@@ -12,7 +12,9 @@
         ],
         marker:[
             {
-
+                position:{x:-6,y:-8,z:-24},
+                scale:1.5,
+                name:'主卧',
             }
         ]
     },

@@ -5,17 +5,21 @@
             <input type="number" v-model="position.y" @change="changePosition" placeholder="y">
             <input type="number" v-model="position.z" @change="changePosition" placeholder="z">
         </div>
-        <preview @changeView="changeView" />
+        <button @click="moveCamera">点击</button>
+        <preview @changeView="changeView"/>
     </div>
 </template>
 
 <script>
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+import TWEEN from '@tweenjs/tween.js';
+// import { CSS2DObject , CSS2DRenderer} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import materialConfig from "@/utils/config"
 import preview from "@/components/preview";
+
 export default {
-    components:{
+    components: {
         preview
     },
     data() {
@@ -30,9 +34,9 @@ export default {
             materialConfig,
 
             position: {
-                x: 0,
-                y: 0,
-                z: 0
+                x: -6,
+                y: -8,
+                z: -24
             }
         }
     },
@@ -107,10 +111,11 @@ export default {
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         },
 
-        // 渲染
+        // 渲染&更新渲染
         render() {
             requestAnimationFrame(this.render);
             this.renderer.render(this.scene, this.camera);
+            TWEEN.update()
             this.renderer.gammaOutput = false;
         },
 
@@ -122,19 +127,56 @@ export default {
 
         //添加标记点
         addMark() {
+            // // 创建标记点的HTML元素
+            // const markerElement = document.createElement('div');
+            // markerElement.textContent = '这是主卧';
+            // markerElement.style.color = 'white';
+            // markerElement.style.backgroundColor = 'red';
+            // markerElement.style.padding = '5px 10px';
+            // // 创建CSS2DObject
+            // const markerObject = new CSS2DObject(markerElement);
+            // // 设置标记点位置
+            // // markerObject.position.set(this.position.x, this.position.y, this.position.z);
+            // markerObject.position.set(-200, -4, -147);
+            // // 添加标记点到场景
+            // this.scene.add(markerObject);
+            // // 创建CSS2DRenderer
+            // const labelRenderer = new CSS2DRenderer();
+            // console.log(labelRenderer)
+            // labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            // document.body.appendChild(labelRenderer.domElement);
+
+
             // 创建图像纹理
-            let texture = new THREE.TextureLoader().load(require('@/assets/images/icon/icon_dw.jpg'));
+            let texture = new THREE.TextureLoader().load(require('@/assets/images/icon/icon_dw.webp'));
             // 创建材质
             const material = new THREE.SpriteMaterial({map: texture});
             // 创建Sprite对象
             this.marker = new THREE.Sprite(material);
             // 设置Sprite大小
-            this.marker.scale.set(0.2, 0.2, 0.2);
+            this.marker.scale.set(10, 10, 10);
             // 设置Sprite位置
-            this.marker.position.set(this.position.x, this.position.y, this.position.z);
+            // this.marker.position.set(this.position.x, this.position.y, this.position.z);
+            this.marker.position.set(-200, -4, -147);
+
             // 添加Sprite到场景
             this.scene.add(this.marker);
         },
+
+        //利用tween.js实现相机移动
+        moveCamera(pos = {x: -6, y: -6, z: -46} , viewName = 'masterBedroom') {
+            const targetPosition = new THREE.Vector3(pos.x, pos.y, pos.z);
+            new TWEEN.Tween(this.camera.position)
+                .to(targetPosition, 1000) // 动画持续时间2秒
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onComplete(() => {
+                    //移动结束-切换场景
+                    this.changeView(viewName);
+                    this.camera.position.set(0, 0, 0);
+                })
+                .start();
+        },
+
         changePosition() {
             this.marker.position.set(this.position.x, this.position.y, this.position.z);
         }
