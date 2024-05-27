@@ -1,6 +1,11 @@
 <template>
     <div class="three-box">
-        <button @click="changeView('cloakroom')">点击切换</button>
+        <div>
+            <input type="number" v-model="position.x" @change="changePosition" placeholder="x">
+            <input type="number" v-model="position.y" @change="changePosition" placeholder="y">
+            <input type="number" v-model="position.z" @change="changePosition" placeholder="z">
+        </div>
+        <preview @changeView="changeView" />
     </div>
 </template>
 
@@ -8,7 +13,11 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import materialConfig from "@/utils/config"
+import preview from "@/components/preview";
 export default {
+    components:{
+        preview
+    },
     data() {
         return {
             scene: null,
@@ -19,6 +28,12 @@ export default {
             mesh: null,
             timer: null,
             materialConfig,
+
+            position: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
         }
     },
     mounted() {
@@ -26,6 +41,7 @@ export default {
         this.initObject();
         this.initControls();
         this.render();
+        this.addMark();
         // 监听窗口变化
         window.addEventListener('resize', this.onWindowResize, false);
     },
@@ -39,9 +55,9 @@ export default {
             this.renderer = new THREE.WebGLRenderer({
                 antialias: true,
             });
-            this.renderer.antialias=true;
-            this.renderer.alpha=true;
-            this.renderer.precision='highp'
+            this.renderer.antialias = true;
+            this.renderer.alpha = true;
+            this.renderer.precision = 'highp'
             this.renderer.setPixelRatio(window.devicePixelRatio) // 设置像素比
             this.renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(this.renderer.domElement);
@@ -64,7 +80,7 @@ export default {
                 return new THREE.MeshBasicMaterial({map: texture});
             });
 
-            if (!this.geometry){
+            if (!this.geometry) {
                 // 创建盒模型
                 this.geometry = new THREE.BoxGeometry(10, 10, 10);
                 // 创建网格
@@ -72,11 +88,13 @@ export default {
                 // 反转视角
                 this.mesh.geometry.scale(10, 10, -10);
 
-            }else{
-                console.log(textureList)
-                console.log('切换材质')
-                this.mesh.material.map = textureList;
-                this.mesh.material.needsUpdate = true; // 标记材质需要更新
+            } else {
+                // 更新六个面的材质
+                for (let i = 0; i < this.mesh.material.length; i++) {
+                    this.mesh.material[i] = textureList[i]
+                }
+                // 标记材质需要更新
+                this.mesh.material.needsUpdate = true;
             }
             // 添加到场景
             this.scene.add(this.mesh);
@@ -96,20 +114,39 @@ export default {
             this.renderer.gammaOutput = false;
         },
 
-        // 切换视角
-        changeView(name){
+        // 切换场景
+        changeView(key) {
             this.scene.remove(this.mesh);
-            this.initObject(name);
+            this.initObject(key);
+        },
+
+        //添加标记点
+        addMark() {
+            // 创建图像纹理
+            let texture = new THREE.TextureLoader().load(require('@/assets/images/icon/icon_dw.jpg'));
+            // 创建材质
+            const material = new THREE.SpriteMaterial({map: texture});
+            // 创建Sprite对象
+            this.marker = new THREE.Sprite(material);
+            // 设置Sprite大小
+            this.marker.scale.set(0.2, 0.2, 0.2);
+            // 设置Sprite位置
+            this.marker.position.set(this.position.x, this.position.y, this.position.z);
+            // 添加Sprite到场景
+            this.scene.add(this.marker);
+        },
+        changePosition() {
+            this.marker.position.set(this.position.x, this.position.y, this.position.z);
         }
     }
 }
 </script>
 
 <style scoped>
-.three-box{
+.three-box {
     overflow: hidden;
     position: absolute;
-    left:100px;
+    left: 100px;
     top: 100px;
     z-index: 999;
 }

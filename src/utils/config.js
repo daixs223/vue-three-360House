@@ -1,5 +1,6 @@
  const  materialConfig = {
     toilet: {
+        previewImg: require('@/assets/images/preview/toilet.jpg'),
         name:'厕所',
         picList:[
             require('@/assets/images/material/toilet/mobile_r.jpg'),
@@ -8,9 +9,15 @@
             require('@/assets/images/material/toilet/mobile_d.jpg'),
             require('@/assets/images/material/toilet/mobile_f.jpg'),
             require('@/assets/images/material/toilet/mobile_b.jpg'),
+        ],
+        marker:[
+            {
+
+            }
         ]
     },
     cloakroom: {
+        previewImg: require('@/assets/images/preview/cloakroom.jpg'),
         name:'衣帽间',
         picList:[
             require('@/assets/images/material/cloakroom/mobile_r.jpg'),
@@ -22,6 +29,7 @@
         ]
     },
     drawingRoom: {
+        previewImg: require('@/assets/images/preview/drawingRoom.jpg'),
         name:'客厅',
         picList:[
             require('@/assets/images/material/drawingRoom/mobile_r.jpg'),
@@ -33,6 +41,7 @@
         ]
     },
     kitchen: {
+        previewImg: require('@/assets/images/preview/kitchen.jpg'),
         name:'厨房',
         picList:[
             require('@/assets/images/material/kitchen/mobile_r.jpg'),
@@ -44,6 +53,7 @@
         ]
     },
     secondaryBedroom: {
+        previewImg: require('@/assets/images/preview/secondaryBedroom.jpg'),
         name:'次卧',
         picList:[
             require('@/assets/images/material/secondaryBedroom/mobile_r.jpg'),
@@ -55,6 +65,7 @@
         ]
     },
     masterBedroom: {
+        previewImg: require('@/assets/images/preview/masterBedroom.jpg'),
         name:'主卧',
         picList:[
             require('@/assets/images/material/masterBedroom/mobile_r.jpg'),
