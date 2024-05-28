@@ -1,4 +1,4 @@
-# test2
+# vue-threejs-360
 
 ## Project setup
 ```
