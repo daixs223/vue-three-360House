@@ -3,7 +3,7 @@
         <div class="preview-cto">
             <div class="cto-item"
                  :class="checkedKey === item.key ? 'active' : ''"
-                 v-for="item in previewList" :key="item.key" @click="handleClickPreview(item.key)">
+                 v-for="item in previewList" :key="item.key" @click.stop="handleClickPreview(item.key)">
                 <div class="img-box">
                     <img :src="item.previewImg" alt="">
                 </div>
@@ -31,6 +31,9 @@ export default {
         })
     },
     methods: {
+        changeView(key) {
+            this.checkedKey = key;
+        },
         handleClickPreview(key) {
             this.checkedKey = key;
             this.$emit('changeView', key);
@@ -47,7 +50,7 @@ export default {
     bottom: 100px;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 99;
+    z-index: 999;
 }
 .preview .preview-cto {
     display: flex;
